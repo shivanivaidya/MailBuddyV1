@@ -1,108 +1,264 @@
-# MailBuddy PRD
+# MailBuddy V1 PRD
 
 ## 1. Product Summary
 
-MailBuddy is an AI-native inbox operating system that reduces cognitive overload by transforming Gmail messages into structured, actionable, semantically organized workflows.
+MailBuddy is a semantic intelligence layer for Gmail. It turns real inbox data into structured, source-backed objects such as tasks, updates, semantic threads, financial items, institutional notices, digests, noise, and reference memory.
 
-MailBuddy is not a Gmail wrapper. Gmail stores messages. MailBuddy stores the meaning layer: tasks, updates, semantic threads, financial vigilance items, opportunities, digest items, noise, institutional notices, and operational memory.
+MailBuddy is not a Gmail replacement. Gmail remains the source of truth for raw email. MailBuddy stores the meaning layer.
 
-The core thesis is that modern email is no longer just communication. It is a messy combination of tasks, receipts, updates, alerts, opportunities, newsletters, appointments, school/health/government notices, and long-term reference memory. Traditional inboxes organize messages. MailBuddy organizes intent.
+V1 is a single-user, demo-safe portfolio application built against the creator's real Gmail patterns.
 
-## 2. Problem
+## 2. Core Thesis
 
-Users experience the inbox as a high-volume stream where everything competes for attention. Unread counts flatten high-stakes notices, refunds, tasks, newsletters, receipts, and promotions into the same visual priority.
+Modern email is not just communication. It is a stream of obligations, receipts, financial records, newsletters, account notices, appointments, logistics, and long-term reference material.
 
-The main problems are:
+Traditional inboxes organize messages. MailBuddy organizes meaning.
 
-- Important obligations are buried in low-value email.
-- Users must manually infer what needs action.
-- Delivery, refund, appointment, travel, and event states are scattered across messages.
-- Search requires users to remember exact keywords instead of meaning.
-- Newsletters and learning content create backlog guilt instead of useful digests.
-- Notifications interrupt users before messages are understood.
-- AI summaries alone are not trustworthy enough for calculations, state, or risky actions.
+The first product promise:
 
-## 3. Target Users
+> MailBuddy tells you what actually needs attention, what can wait, and what evidence supports each conclusion.
 
-The portfolio/demo MVP is designed for a single Gmail account owned by the project creator. The product direction still assumes broader future users.
+## 3. Prior Real-Data Discovery
 
-Primary future users:
+Before V1, MailBuddy was tested against a real Gmail sample after an initial synthetic-data prototype.
+
+Key findings:
+
+- Synthetic demo emails overrepresented complete, clean task and update data.
+- Real Gmail contains much more noise, receipts, financial documents, account notices, newsletters, and reference material.
+- Many merchant and order emails do not contain full item, refund, or replacement details in the email body.
+- Important details are often behind external links.
+- Gmail thread IDs alone are insufficient for grouping real-world workflows.
+- The product needs durable semantic objects rather than UI-local derived state.
+- Search and retrieval need to work over meaning, exact terms, dates, senders, and object categories.
+- Demo safety and redaction must be part of the architecture, not a final polish step.
+
+V1 semantic categories are based on this prior real Gmail discovery.
+
+## 4. V1 Goals
+
+V1 should prove four things:
+
+- MailBuddy can ingest real Gmail data safely.
+- MailBuddy can convert messy email into durable semantic objects.
+- MailBuddy can separate attention-worthy items from noise.
+- MailBuddy can answer questions using structured objects and source evidence.
+
+## 5. Target User
+
+V1 is for one user: the project creator.
+
+Future target users:
 
 - Busy professionals managing async work, logistics, and personal operations.
 - Household managers tracking deliveries, appointments, bills, school communication, and errands.
 - AI-native productivity users who want semantic workflows instead of inbox hygiene.
 - People with high email volume who need help knowing what matters today.
 
-Non-target for MVP:
+Non-target for V1:
 
 - Shared team inboxes.
 - Enterprise compliance deployments.
 - Multi-provider email support.
 - Fully autonomous email agents.
+- Public SaaS onboarding.
 
-## 4. Product Vision
+## 6. Product Principles
 
-MailBuddy should help users feel on top of their inbox instead of buried under it.
-
-The ideal experience:
-
-- The home screen answers "What needs my attention?"
-- Tasks are extracted from emails with due dates, urgency, effort, and source links.
-- Updates are presented as lifecycles, not scattered messages.
-- Conversations are grouped by meaning and summarized by state.
-- The assistant answers operational questions using structured data and deterministic tools.
-- Voice provides a hands-free inbox briefing and quick review path.
-- Noise is suppressed without hiding important institutional information.
-
-## 5. Product Principles
-
-- Structure before reasoning.
-- Deterministic truth before AI phrasing.
-- Semantic objects over raw email retrieval.
-- Constrained tools over open-ended agents.
-- Trustworthiness over maximum automation.
-- Human approval for risky actions.
-- AI should reduce anxiety, not create more.
+- Real Gmail patterns over synthetic demos.
+- Semantic objects over raw email lists.
+- Evidence before explanation.
+- Deterministic tools for truth-sensitive work.
+- LLMs interpret, classify, summarize, and explain.
+- LLMs do not compute financial totals or invent state.
+- Store demo-safe data, not raw private inbox content.
+- When details are behind an external link, say so.
+- Uncertainty is a product feature, not a failure.
+- Human approval is required for risky actions.
 - MailBuddy earns permission to interrupt.
 
-LLMs should handle classification, summarization, interpretation, planning, explanation, and natural-language interaction.
+## 7. Core User Experience
 
-Deterministic tools should handle retrieval, filtering, calculations, state transitions, totals, timelines, and notification policy enforcement.
+The first screen is **Attention Today**.
 
-LLMs should not be trusted for financial calculations, deterministic state, raw retrieval truth, or sending/deleting/unsubscribing without explicit approval.
+It should answer:
 
-## 6. Core Semantic Objects
+- What needs action?
+- What changed?
+- What money-related items should I notice?
+- Who may be waiting on me?
+- What is noise?
+- What evidence supports each item?
 
-MailBuddy should convert emails into semantic objects:
+Primary screens:
 
-- `task`: obligation, request, approval, deadline, follow-up, form, review.
-- `update`: delivery, refund, replacement, appointment, travel, event, lifecycle status.
-- `semantic_thread`: related conversation grouped by meaning, not only Gmail thread ID.
-- `financial_vigilance_item`: receipt, subscription, bank alert, invoice, payment issue, unusual activity.
-- `opportunity`: recruiting, networking, event, grant, collaboration, professional opening.
-- `digest_item`: newsletter, learning content, industry update, saved reading.
-- `noise_item`: low-action marketing, repeated low-value notification, suppressible content.
-- `institutional_item`: health, government, legal, school, immigration, insurance, high-stakes notice.
-- `reference_item`: useful long-term memory that may not require action today.
+- Attention Today
+- Tasks
+- Updates
+- Semantic Threads
+- Financial
+- Search / Memory
+- Assistant
+- Data Safety / Evaluation
 
-Every object should preserve provenance to its source Gmail message or thread.
+## 8. Core Semantic Objects
 
-## 7. Feature Set
+MailBuddy stores semantic objects derived from Gmail.
 
-### Suggested To-Do List
+### `source_email`
 
-AI extracts tasks from emails and presents them as editable action items.
+Represents a Gmail message with minimized and sanitized fields.
 
-Required fields:
+Fields:
+
+- id
+- Gmail message id
+- Gmail thread id
+- sender name/domain
+- subject
+- received timestamp
+- labels
+- snippet
+- sanitized body excerpt, if allowed
+- attachment metadata
+- detected links
+- raw content retention status
+
+### `semantic_object`
+
+Base object for all extracted meaning.
+
+Fields:
+
+- id
+- object type
+- title
+- summary
+- status
+- priority
+- confidence
+- object date
+- source refs
+- evidence snippets
+- uncertainty flags
+- extracted entities
+- embedding text
+- embedding vector
+- created at
+- updated at
+
+Object types:
+
+- `task`
+- `update`
+- `semantic_thread`
+- `financial_item`
+- `institutional_item`
+- `digest_item`
+- `noise_item`
+- `reference_item`
+
+## 9. Source References
+
+Every semantic object must preserve provenance.
+
+A source ref includes:
+
+- source email id
+- source subject
+- sender/domain
+- timestamp
+- evidence snippet
+- confidence
+- reason the source supports the object
+
+The UI should let users inspect the source behind every task, update, financial item, semantic thread, search result, and assistant answer.
+
+## 10. Gmail Ingestion
+
+V1 supports Gmail readonly ingestion for a single account.
+
+Included:
+
+- Gmail OAuth readonly scope.
+- Initial sync of recent mail.
+- Local/private raw export option.
+- Message metadata fetch.
+- Plain text extraction where available.
+- Detected links.
+- Attachment filenames.
+- Gmail message/thread IDs.
+- Ingestion status.
+- Manual refresh.
+
+Not required in V1:
+
+- Production Pub/Sub.
+- Multi-account auth.
+- Sending email.
+- Deleting email.
+- Unsubscribe execution.
+- External site login.
+
+## 11. Demo Safety And Redaction
+
+V1 stores and displays demo-safe semantic data.
+
+Rules:
+
+- Do not commit raw Gmail exports.
+- Do not store raw private email bodies in the application database long-term.
+- Replace personal names, emails, phone numbers, addresses, account numbers, confirmation numbers, and sensitive notes.
+- Fabricate financial, health, legal, immigration, insurance, and government institutions.
+- Keep ordinary merchant names only when safe.
+- Preserve semantic meaning.
+- Keep deterministic replacement maps so repeated entities stay consistent.
+- Add redaction tests as hard gates.
+
+The UI should include a Data Safety screen showing:
+
+- demo-safe data active
+- last redaction run
+- redaction test status
+- raw data retention status
+- number of source emails processed
+- number of semantic objects created
+
+## 12. Link-Limited Updates
+
+Many real emails do not contain full details. They link to merchant, bank, healthcare, government, or other portals.
+
+MailBuddy must represent this honestly.
+
+Update detail states:
+
+- `complete_from_email`
+- `partial_from_email`
+- `details_behind_link`
+- `requires_user_review`
+- `unsupported_without_external_fetch`
+
+Example:
+
+> Whole Foods sent an order update, but item-level replacement details are behind an external link. MailBuddy can track that an update occurred, but cannot verify replacements from this email alone.
+
+External fetching is future scope.
+
+## 13. Tasks
+
+MailBuddy extracts tasks from emails.
+
+Task fields:
 
 - title
-- due date when available
+- due date
 - urgency
-- estimated effort
 - status
 - confidence
-- source email link
+- reason
+- source refs
 - evidence snippet
+- uncertainty flags
 
 Actions:
 
@@ -112,267 +268,359 @@ Actions:
 - edit
 - open source
 
-### Updates Dashboard
+V1 task categories:
 
-Tracks operational lifecycles:
+- forms
+- bills
+- appointment prep
+- school/family tasks
+- work follow-ups
+- reply-needed messages
+- registration/deadline tasks
+
+## 14. Updates
+
+MailBuddy tracks operational updates.
+
+V1 update categories:
 
 - deliveries
 - refunds
-- replacements
 - appointments
-- travel
-- event updates
 - reservations
+- travel/events
+- account or policy changes
 
-The dashboard should show current state, timeline, latest change, and whether the user needs to act.
+Update fields:
 
-### Semantic Threads
+- current state
+- latest change
+- timeline
+- action needed
+- completeness state
+- source refs
+- external link limitation, if any
 
-Groups related conversations by meaning, not only Gmail thread ID.
+## 15. Semantic Threads
 
-Capabilities:
+MailBuddy should group related email conversations by meaning, not only Gmail thread ID.
 
-- summarize discussion state
-- detect unresolved questions
-- detect who is waiting on whom
-- identify pending replies
-- connect related messages across separate Gmail threads when appropriate
+Gmail thread ID is useful but insufficient because real-world conversations often split across:
 
-### AI Assistant
+- changed subject lines
+- forwarded messages
+- separate replies from different people
+- calendar/order/system follow-ups
+- repeated institutional notices
+- multiple emails about the same form, claim, refund, appointment, or trip
 
-Natural-language interface over structured inbox intelligence.
+### `semantic_thread`
 
-Example questions:
+A `semantic_thread` represents one real-world topic or unresolved workflow.
+
+Fields:
+
+- id
+- title
+- summary
+- status
+- priority
+- confidence
+- participant entities
+- related source email ids
+- Gmail thread ids
+- topic embeddings
+- unresolved questions
+- who is waiting on whom
+- latest meaningful change
+- suggested next action
+- evidence snippets
+- created at
+- updated at
+
+### Thread Creation
+
+MailBuddy can create semantic threads from:
+
+- Gmail thread ID
+- normalized subject similarity
+- sender/recipient overlap
+- entity overlap
+- date proximity
+- shared links/order numbers/claim numbers
+- embedding similarity
+- explicit semantic category match
+
+### V1 Thread Scope
+
+V1 should support semantic threads lite:
+
+- group by Gmail thread ID first
+- merge obvious related threads when confidence is high
+- show confidence and source evidence
+- avoid merging ambiguous threads
+- flag possible related messages for review instead of silently merging
+
+### Thread UI
+
+The Threads screen should show:
+
+- topic
+- participants
+- latest message
+- current state
+- unresolved questions
+- who is waiting on whom
+- suggested next action
+- related source emails
+- possible related emails, if confidence is not high enough to auto-merge
+
+### Assistant Support
+
+The assistant should answer:
+
+- Which conversations need replies?
+- Who is waiting on me?
+- What is the status of the school form conversation?
+- Did Maya respond about the trip?
+- What is unresolved in the budget thread?
+- Show related emails about the insurance claim.
+
+If MailBuddy merges messages across Gmail thread IDs, the UI should explain why.
+
+Example:
+
+> Grouped because the messages mention the same insurance claim, share participants, and occurred within 4 days.
+
+## 16. Financial Items
+
+Financial items are first-class semantic objects.
+
+Categories:
+
+- receipts
+- subscriptions
+- invoices
+- payment reminders
+- refund notices
+- bank/card alerts
+- tax/insurance/benefit documents
+- unusual financial notices
+
+Financial item fields:
+
+- merchant/institution
+- amount, if available
+- due date, if available
+- status
+- category
+- confidence
+- source refs
+- sensitivity level
+- calculation eligibility
+
+Financial totals must come from deterministic code, not LLM prose.
+
+## 17. Institutional Items
+
+Institutional items are high-sensitivity or high-consequence notices.
+
+Categories:
+
+- health
+- government
+- legal
+- school
+- immigration
+- insurance
+- benefits
+- housing
+- taxes
+
+Institutional items should not be suppressed as ordinary noise even when sender patterns are repetitive.
+
+## 18. Noise And Digest
+
+MailBuddy should identify low-action email.
+
+Noise examples:
+
+- promotions
+- repeated merchant marketing
+- routine newsletters
+- generic product announcements
+- low-value notifications
+
+Digest items:
+
+- newsletters
+- learning content
+- product/industry updates
+- saved reading candidates
+
+V1 does not need a full Digest page, but it should track:
+
+- quieted noise count
+- top noisy senders
+- digest candidates
+- items suppressed from Attention Today
+
+## 19. Semantic Search
+
+V1 includes basic semantic object search.
+
+User examples:
+
+- Find my dental receipt.
+- Show school forms.
+- Find refund emails.
+- Show immigration-related notices.
+- Find tax documents.
+- Show subscription renewals.
+
+Implementation:
+
+- create embedding text per semantic object
+- store embeddings
+- vector search by query
+- combine with keyword search for exact values
+- filter by type/date/status/sender/category
+- return source-backed results
+
+Search should not answer stateful questions by itself. Stateful answers should go through deterministic tools and assistant reasoning.
+
+## 20. Assistant
+
+The assistant answers questions over semantic objects.
+
+Supported V1 questions:
 
 - What needs my attention today?
-- Did I get refunded?
+- What tasks are due soon?
 - Which conversations need replies?
+- Did I get a refund notice?
+- Find my dental receipt.
+- What financial items should I review?
+- Show school-related tasks.
 - What important emails did I miss this week?
-- How much did I spend at Whole Foods this month?
-- Find my dental receipt.
 
-The assistant should call deterministic tools for retrieval, filtering, aggregation, and timelines, then use the LLM to explain results.
+Assistant rules:
 
-### Voice Assistant
+- use deterministic tools for retrieval, filtering, totals, and timelines
+- cite source objects
+- say when evidence is incomplete
+- say when details are behind links
+- do not invent refunds, payments, due dates, or statuses
+- do not take risky actions
 
-Voice-first inbox interaction using an OpenAI voice pipeline.
+## 21. Attention Today
 
-Demo flow:
+This is the flagship screen.
 
-- Browser records audio.
-- Next.js sends audio to FastAPI.
-- FastAPI transcribes audio with OpenAI.
-- Assistant planner interprets the request.
-- Deterministic tools query Postgres.
-- LLM finalizes the response.
-- FastAPI returns text and optional generated audio.
-- Frontend displays transcript and plays the response.
+Sections:
 
-### Insights Widgets
+- Needs Action
+- Important Updates
+- Financial Watch
+- Waiting On Me
+- Quieted Noise
+- Incomplete / Needs Review
 
-Possible widgets:
+Each item shows:
 
-- spending summaries
-- subscription trends
-- response delays
-- busiest senders
-- opportunity tracking
-- cognitive overload sources
-- muted/noise volume
+- title
+- type
+- priority
+- confidence
+- why it appears
+- source evidence
+- action buttons
 
-### Digest Mode
+This screen matters more than every secondary feature.
 
-Summarizes newsletters and learning content by topic. Initial digest groups may include AI, product management, career, local events, personal learning, and industry updates.
+## 22. Evaluation
 
-### Ignore / Mute System
+Evaluation is a product requirement, not an afterthought.
 
-Allows users to reduce low-value email pressure.
+V1 evaluation areas:
 
-Capabilities:
+- classification accuracy
+- task extraction quality
+- update completeness detection
+- semantic thread grouping quality
+- financial item extraction
+- redaction safety
+- semantic search relevance
+- assistant groundedness
+- deterministic calculation correctness
 
-- mute senders
-- mute merchants
-- hide low-value categories
-- learn from dismiss/mute behavior
-- keep high-stakes institutional items visible even if sender patterns are noisy
+The app should include an evaluation report command or page showing:
 
-### Unsubscribe Assistant
+- fixture count
+- semantic object counts
+- redaction pass/fail
+- known failure cases
+- unsupported patterns
+- examples of link-limited emails
 
-Detects repeated low-value senders and suggests unsubscribe actions. The MVP should suggest only. Production unsubscribe actions require explicit approval.
-
-### Smart Search / Operational Memory
-
-Search by meaning, not just keywords.
-
-Examples:
-
-- Find my dental receipt.
-- Show my immigration emails.
-- When did I buy this?
-- Find that refund email.
-- Show emails about the school form.
-
-### Connected Detail Fetching
-
-Future scope for emails that do not contain full details, such as grocery orders or event sites.
-
-Rules:
-
-- OAuth preferred.
-- Browser-assisted flows only with explicit user approval.
-- Never store raw credentials.
-- Never log into external accounts autonomously.
-
-## 8. MVP Scope
-
-The MVP is a portfolio/demo app, optimized to show the product thesis on real Gmail-derived patterns while protecting sensitive information.
+## 23. V1 Scope
 
 Included:
 
-- Gmail-only integration.
-- Single Gmail account owned by the creator.
-- Web and mobile-first app.
-- Next.js frontend.
-- Python FastAPI backend.
-- Postgres with pgvector.
-- OpenAI text and voice pipeline.
-- Initial Gmail sync of recent mail.
-- Manual sync.
-- Periodic background sync while the backend is active.
-- Email normalization.
-- Semantic classification.
-- Sanitized semantic object storage.
-- Task extraction.
-- Updates dashboard.
-- Basic semantic threads.
-- Assistant over semantic objects.
-- Voice assistant demo.
-- Demo-safe redaction and alteration.
-- Evaluation fixtures and tests.
+- single-user Gmail readonly ingestion
+- prior-discovery-informed semantic categories
+- redaction/sanitization pipeline
+- semantic object schema
+- source references
+- task extraction
+- update extraction with link-limited states
+- semantic threads lite
+- financial item extraction
+- institutional item classification
+- noise/digest classification
+- semantic object search
+- Attention Today dashboard
+- Assistant over semantic objects
+- Data Safety / Evaluation screen
+- curated demo snapshot generated from sanitized real patterns
 
 Not included:
 
-- Multi-user production onboarding.
-- Multi-provider email support.
-- Full push notification delivery.
-- Autonomous send/delete/unsubscribe.
-- External account login.
-- Raw private mailbox replication.
-- Enterprise compliance.
+- multi-user auth
+- production push notifications
+- external account login
+- browser-assisted merchant detail fetching
+- autonomous unsubscribe
+- send/delete/archive actions
+- full voice assistant
+- full digest reader
+- opportunities page
+- native mobile app
+- billing or SaaS onboarding
 
-## 9. Demo Data Policy
+## 24. Success Criteria
 
-MailBuddy MVP is demo-mode-only. It connects to the creator's Gmail, processes real inbox patterns, and stores/displays altered, demo-safe semantic data.
+V1 is successful if:
 
-Policy:
+- real Gmail data can be processed safely
+- raw private data is not exposed in the demo
+- the app creates useful semantic objects from messy inbox patterns
+- Attention Today feels meaningfully better than a Gmail unread list
+- semantic threads group real-world workflows better than Gmail thread IDs alone
+- assistant answers are source-backed and honest about uncertainty
+- the portfolio can show architecture, real-data discovery learnings, evals, and UI
+- the product story clearly demonstrates spec-driven, agent-assisted development
 
-- Store sanitized semantic objects, not raw private inbox data.
-- Raw email content may be held temporarily during ingestion and processing, then discarded.
-- Keep non-sensitive merchant names when useful for realism, such as Amazon, Target, Whole Foods, Uber, DoorDash.
-- Fabricate realistic names for financial, health, legal, immigration, government, insurance, and other sensitive institutions.
-- Alter people names, email addresses, phone numbers, physical addresses, account numbers, order IDs, confirmation numbers, and exact sensitive notes.
-- Preserve the product meaning: a dental appointment remains a dental appointment; a refund remains a refund; a bank alert remains a financial vigilance item.
+## 25. Portfolio Story
 
-## 10. Gmail Fetch Strategy
+The portfolio should explain:
 
-MVP defaults:
+1. Initial prototype exposed unrealistic synthetic-data assumptions.
+2. Real Gmail discovery revealed noise, financial docs, receipts, link-limited updates, institutional notices, and semantic thread needs.
+3. Product was redesigned around semantic objects, provenance, privacy, and uncertainty.
+4. Implementation used spec-driven development and coding agents.
+5. Evaluation and redaction were treated as first-class product features.
 
-- Initial sync: last 90 days or last 1,000 messages, whichever comes first.
-- Manual sync: user can trigger `Sync now`.
-- Background sync: every 30 minutes while backend is active.
-- Incremental sync: use Gmail message IDs and Gmail `historyId` when available to avoid reprocessing.
-- Processing priority: high-stakes categories, tasks, updates, and financial vigilance before digests/noise.
+The intended story:
 
-Future production:
-
-- Gmail Pub/Sub push notifications.
-- Incremental sync using Gmail history API.
-- User-controlled sync windows.
-- Backfill older email only when requested.
-- Category-specific processing priorities.
-
-## 11. Notification Strategy
-
-Production should ingest immediately but notify selectively.
-
-New email flow:
-
-1. Gmail push notification arrives.
-2. Backend fetches changed messages.
-3. Messages are normalized.
-4. Semantic objects are extracted.
-5. Importance and urgency are scored.
-6. Notification decision engine chooses interrupt, queue, digest, or suppress.
-
-Notification tiers:
-
-- `critical`: notify immediately.
-- `timely`: notify during an allowed notification window.
-- `digest`: include in daily or weekly summary.
-- `silent`: store and organize without interruption.
-
-Immediate notifications should be limited to urgent tasks, appointment changes, travel changes, delivery problems, refund/payment problems, high-stakes institutional notices, and conversations where someone is waiting on the user.
-
-For the MVP, production push notifications are documented but not required. The demo can show an in-app notification center, important update badge, and simulated notification examples.
-
-## 12. Success Metrics
-
-Product metrics:
-
-- Fewer important emails missed.
-- Less time spent scanning raw inbox.
-- High user trust in extracted tasks and updates.
-- High assistant answer correctness.
-- Low redaction failure rate.
-- Reduction in notification noise.
-- Repeat use of dashboard and voice briefing.
-
-AI/evaluation metrics:
-
-- Task extraction precision and recall.
-- Update lifecycle field accuracy.
-- Classification accuracy by semantic category.
-- Assistant groundedness.
-- Redaction safety pass rate.
-- Deterministic calculation correctness.
-
-Portfolio metrics:
-
-- Clear demo walkthrough.
-- Credible architecture.
-- Strong visual artifacts.
-- GitHub repository with docs, tests, and decision log.
-- Screenshots/GIFs that are demo-safe.
-
-## 13. Risks
-
-- Incorrect classification causes missed important items.
-- Assistant fabricates facts not present in semantic objects.
-- Redaction misses sensitive data.
-- Gmail API limits or OAuth friction slow the demo.
-- Voice pipeline adds latency or complexity.
-- Storing too much raw email creates privacy risk.
-- Over-notification recreates inbox anxiety.
-- Agentic development branches conflict without ownership boundaries.
-
-## 14. Differentiation
-
-MailBuddy is different from:
-
-- A Gmail wrapper: it does not center raw message browsing.
-- Inbox zero tools: it does not treat processing email as the user's job.
-- AI summarizers: it creates durable semantic objects, not just prose.
-- Search tools: it maintains operational memory and lifecycle state.
-- Autonomous agents: it uses constrained tools and approval gates.
-
-The differentiated claim:
-
-MailBuddy is a semantic operating layer for inbox intent.
-
-## 15. Open Questions
-
-- Which exact screens should be included in the first recorded demo?
-- Should the MVP include generated audio responses or browser playback of text responses first?
-- Which categories should be most visually prominent in the first dashboard?
-- What redaction strictness is acceptable for public portfolio screenshots?
-- Should production architecture target mobile push later through a wrapper app or web push first?
+> I rebuilt an AI inbox prototype into a real-data semantic email system with provenance, privacy, and evaluation.
