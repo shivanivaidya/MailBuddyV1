@@ -119,3 +119,43 @@ Decision: The project should be built with parallel coding agents using explicit
 Reason: The product has separable vertical slices: ingestion, semantic pipeline, assistant, voice, frontend, sanitization, and evaluation.
 
 Implication: `AGENTS.md` defines plan mode, ownership, docs, and testing requirements.
+
+## Decision 016: Rebuild Around Prior Real-Gmail Discovery
+
+Decision: MailBuddyV1 is a spec-driven rebuild informed by the creator's prior real Gmail discovery after the synthetic v0 prototype.
+
+Reason: The first prototype showed that synthetic demo emails were too clean. Real Gmail contains more noise, financial documents, receipts, institutional notices, incomplete merchant updates, link-limited details, and fragmented conversations than the original demo represented.
+
+Implication: V1 should not optimize for idealized sample emails. It should model uncertainty, source evidence, link-limited states, and categories observed in real Gmail patterns.
+
+## Decision 017: Choose Dual-Mode Semantic System
+
+Decision: V1 will use a dual-mode architecture: a polished sanitized demo snapshot as the default walkthrough, plus live Gmail readonly ingest as technical proof. Both modes must feed the same semantic object layer.
+
+Reason: The sanitized snapshot protects the demo from live-data fragility, while live ingest proves the system is not a static mock. A shared semantic object layer keeps the product honest and avoids two separate demo paths.
+
+Implication: The main demo should never depend on a live Gmail sync succeeding in real time. Live Gmail ingest is proof of realism, not the primary walkthrough.
+
+## Decision 018: Attention Today Is The Flagship
+
+Decision: The first screen and primary demo moment is `Attention Today`.
+
+Reason: The strongest product promise is not "AI email assistant." It is getting the user productive within seconds by turning Gmail overwhelm into a small number of source-backed decisions.
+
+Implication: Tasks, updates, financial items, semantic threads, search, assistant, and evaluation should support the Attention Today story. Secondary features should not compete with it in V1.
+
+## Decision 019: Defer Full Voice And Broad Extra Surfaces
+
+Decision: Full voice assistant, full digest reader, opportunities, production push notifications, browser-assisted merchant fetching, autonomous unsubscribe, and native mobile are deferred from V1.
+
+Reason: V1 must prove semantic Gmail intelligence, provenance, privacy, and evaluation in a two-week build window. These extra surfaces increase scope without improving the core demo enough.
+
+Implication: Voice may be referenced as future scope, but it should not be a V1 success criterion. The portfolio artifact should be judged on the semantic object system and Attention Today workflow.
+
+## Decision 020: Require Five-Minute Demo Script Before Implementation
+
+Decision: Before implementation, write the exact five-minute demo script.
+
+Reason: If the product story is not compelling on paper, adding features will not fix it. The script forces the team to identify the five Attention Today decisions, one task evidence drilldown, one link-limited update, one semantic thread, one search query, one assistant query, and one safety/eval proof point.
+
+Implication: `TASKS.md` should treat the demo script as a pre-implementation gate.

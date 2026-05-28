@@ -1,56 +1,99 @@
-# MailBuddy
+# MailBuddyV1
 
-MailBuddy is an AI-native inbox operating system that turns Gmail into structured semantic workflows.
+MailBuddyV1 is a semantic intelligence layer for Gmail. It turns real inbox patterns into source-backed tasks, updates, semantic threads, financial items, institutional notices, search results, and attention workflows.
 
-Instead of organizing messages, MailBuddy organizes intent: tasks, updates, semantic threads, financial vigilance items, opportunities, digest items, noise, institutional notices, and reference memory.
+MailBuddy is not a Gmail replacement. Gmail stores raw email. MailBuddy stores the meaning layer.
 
-## MVP Direction
+The V1 product promise:
 
-The first version is a portfolio/demo app:
+> Get productive within seconds by turning Gmail overwhelm into a small set of source-backed decisions.
 
-- Gmail-only.
-- Single Gmail account owned by the creator.
-- Web and mobile-first.
-- Next.js frontend.
-- Python FastAPI backend.
-- Postgres with pgvector.
-- OpenAI text and voice pipeline.
-- Demo-mode-only storage with altered/sanitized data.
+## Product Direction
 
-The product principle is:
+V1 is a portfolio/demo rebuild informed by a prior real-Gmail discovery pass after an initial synthetic prototype.
 
-> Gmail stores the inbox. MailBuddy stores the meaning layer.
+The important discovery was that real Gmail is messier than synthetic demos:
+
+- many messages are noise, receipts, account notices, newsletters, or reference material
+- many merchant and order emails contain partial information and link out for details
+- financial and institutional messages need stronger privacy handling
+- Gmail thread IDs are not enough to model real-world workflows
+- useful answers require durable semantic objects, source evidence, and uncertainty handling
+
+## V1 Strategy
+
+MailBuddyV1 uses a dual-mode semantic system:
+
+- **Sanitized demo snapshot:** the default polished walkthrough.
+- **Live Gmail readonly ingest:** technical proof that the pipeline works on real data.
+
+Both modes feed the same semantic object layer.
+
+## Core Experience
+
+The flagship screen is **Attention Today**.
+
+It should answer:
+
+- what needs action now
+- what changed
+- what money-related items deserve review
+- who may be waiting on the user
+- what was quieted as noise
+- what needs review because evidence is incomplete or behind a link
+
+Primary V1 surfaces:
+
+- Attention Today
+- Tasks
+- Updates
+- Semantic Threads
+- Financial
+- Search / Memory
+- Assistant
+- Data Safety / Evaluation
+
+## Scope
+
+Included in V1:
+
+- Gmail readonly ingestion for one account
+- sanitized snapshot import
+- semantic object schema
+- source references and provenance
+- redaction and demo safety
+- task extraction
+- update extraction with link-limited states
+- financial item extraction
+- semantic threads lite
+- noise/digest classification for attention filtering
+- semantic object search
+- assistant over semantic objects
+- evaluation report
+
+Deferred:
+
+- full voice assistant
+- full digest reader
+- opportunities page
+- production push notifications
+- browser-assisted merchant detail fetching
+- autonomous unsubscribe
+- send/delete/archive actions
+- native mobile app
+- public SaaS onboarding
 
 ## Documentation
 
-- [PRD.md](./PRD.md): product requirements, scope, features, risks, and success metrics.
-- [ARCHITECTURE.md](./ARCHITECTURE.md): system design, ingestion, semantic object layer, assistant, voice, privacy, and notifications.
-- [UI_UX.md](./UI_UX.md): app structure, screens, mobile/voice UX, and demo safety.
+- [PRD.md](./PRD.md): product requirements and V1 scope.
+- [ARCHITECTURE.md](./ARCHITECTURE.md): system design, ingestion, semantic object layer, assistant, privacy, and evaluation.
+- [UI_UX.md](./UI_UX.md): product surfaces and interaction behavior.
 - [AGENTS.md](./AGENTS.md): instructions for coding agents working on this project.
-- [TASKS.md](./TASKS.md): phased implementation roadmap.
+- [TASKS.md](./TASKS.md): implementation roadmap.
 - [DECISIONS.md](./DECISIONS.md): product and architecture decision log.
-- [EVALUATION.md](./EVALUATION.md): AI quality, redaction, assistant, and notification evaluation strategy.
+- [EVALUATION.md](./EVALUATION.md): AI quality, redaction, assistant, semantic search, and grounding evaluation.
 - [CHANGELOG.md](./CHANGELOG.md): project history.
-
-## Portfolio Artifact Plan
-
-Eventual portfolio artifacts:
-
-- PRD.
-- MVP spec.
-- Architecture doc and diagram.
-- UI/UX doc.
-- AI workflow and agent design doc.
-- Evaluation/testing strategy.
-- Demo walkthrough.
-- Product case study.
-- Mobile and desktop screenshots.
-- Voice assistant GIF.
-- GitHub repo.
-- Figma link if available.
-- Short product deck.
-- Decision log.
 
 ## Current Status
 
-Foundation documentation is in progress. App implementation has not started yet.
+Foundation docs are being updated through gstack review skills before implementation starts.

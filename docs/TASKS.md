@@ -1,15 +1,16 @@
-# MailBuddy Tasks
+# MailBuddyV1 Tasks
 
 ## Phase 0: Foundation Documentation
 
-- [x] Create PRD.
-- [x] Create architecture document.
-- [x] Create UI/UX document.
-- [x] Create coding agent instructions.
-- [x] Create implementation roadmap.
-- [x] Create decision log.
-- [x] Create evaluation strategy.
-- [x] Create README and changelog.
+- [x] Create initial PRD.
+- [x] Run CEO review and update PRD around V1 semantic-object scope.
+- [x] Run office-hours review and choose dual-mode semantic system.
+- [x] Record dual-mode, Attention Today, and scope decisions.
+- [ ] Write exact five-minute demo script.
+- [ ] Run engineering review on architecture, data flow, schema, edge cases, and tests.
+- [ ] Run security review before touching real Gmail data.
+- [ ] Run design review for Attention Today, semantic threads, assistant, and Data Safety.
+- [ ] Split implementation into executable specs.
 
 ## Phase 1: Project Scaffolding
 
@@ -19,116 +20,136 @@
 - [ ] Configure shared environment documentation.
 - [ ] Add formatting/linting.
 - [ ] Add basic test runners.
-- [ ] Add initial CI if using GitHub.
-- [ ] Create local development setup instructions.
+- [ ] Add initial CI.
+- [ ] Add local development setup instructions.
+- [ ] Add private-data directory conventions and `.gitignore` coverage.
 
 ## Phase 2: Data Model And Storage
 
-- [ ] Choose Supabase or Neon Postgres.
-- [ ] Define semantic object schema.
-- [ ] Define task/update/thread tables.
-- [ ] Add pgvector support.
+- [ ] Choose Supabase, Neon, or local Postgres first path.
+- [ ] Define `source_email` schema.
+- [ ] Define base `semantic_object` schema.
+- [ ] Define `source_ref` schema.
+- [ ] Define task object fields.
+- [ ] Define update object fields, including link-limited states.
+- [ ] Define financial item fields.
+- [ ] Define institutional item fields.
+- [ ] Define semantic thread fields.
+- [ ] Define noise/digest/reference item fields.
+- [ ] Add pgvector or equivalent embedding support.
 - [ ] Add migration tooling.
-- [ ] Add source reference model.
 - [ ] Add assistant query/audit model.
-- [ ] Add redaction rules model.
+- [ ] Add redaction rules and replacement-map model.
 
-## Phase 3: Gmail Ingestion
+## Phase 3: Gmail Ingestion And Snapshot Import
 
-- [ ] Configure Gmail OAuth app.
-- [ ] Implement OAuth callback in FastAPI.
-- [ ] Store OAuth tokens securely.
+- [ ] Configure Gmail OAuth readonly app.
+- [ ] Implement local/dev Gmail OAuth flow.
+- [ ] Store OAuth tokens securely outside committed files.
 - [ ] Fetch message metadata.
-- [ ] Fetch recent messages for initial sync.
-- [ ] Track Gmail message ID, thread ID, and `historyId`.
-- [ ] Implement manual `Sync now`.
-- [ ] Implement 30-minute background sync.
+- [ ] Fetch recent message bodies where available.
+- [ ] Capture detected links and attachment filenames.
+- [ ] Track Gmail message ID, thread ID, labels, and timestamps.
+- [ ] Implement local raw export path with explicit privacy warnings.
+- [ ] Implement sanitized snapshot import path.
 - [ ] Add ingestion status endpoint.
+- [ ] Add manual refresh path for live Gmail proof mode.
 
-## Phase 4: Demo Sanitization
+## Phase 4: Redaction And Demo Safety
 
-- [ ] Build entity detection for names, emails, phones, addresses, IDs, and sensitive institutions.
+- [ ] Build entity detection for names, emails, phones, addresses, IDs, sensitive institutions, and sensitive notes.
 - [ ] Create deterministic replacement maps.
-- [ ] Keep non-sensitive merchant names.
+- [ ] Keep ordinary merchant names only when safe.
 - [ ] Fabricate financial institution names.
 - [ ] Fabricate health institution names.
-- [ ] Fabricate government/legal/immigration names when needed.
-- [ ] Add redaction tests.
-- [ ] Add demo safety report endpoint.
+- [ ] Fabricate government/legal/immigration/insurance names when needed.
+- [ ] Preserve semantic meaning while altering private details.
+- [ ] Prevent durable raw body storage in demo mode.
+- [ ] Add redaction tests as hard gates.
+- [ ] Add Data Safety report endpoint.
+- [ ] Add Data Safety / Evaluation UI surface.
 
 ## Phase 5: Semantic Pipeline
 
 - [ ] Implement normalized email model.
-- [ ] Implement classification prompt chain.
+- [ ] Implement classify -> extract -> validate -> sanitize -> store pipeline.
 - [ ] Implement task extraction.
 - [ ] Implement update extraction.
-- [ ] Implement financial vigilance extraction.
-- [ ] Implement digest/noise classification.
-- [ ] Implement semantic thread grouping.
-- [ ] Store sanitized semantic objects.
+- [ ] Detect `complete_from_email`, `partial_from_email`, `details_behind_link`, `requires_user_review`, and `unsupported_without_external_fetch`.
+- [ ] Implement financial item extraction.
+- [ ] Implement institutional item classification.
+- [ ] Implement digest/noise/reference classification.
+- [ ] Implement semantic threads lite.
+- [ ] Flag possible related messages instead of merging ambiguous threads.
+- [ ] Generate embedding text for semantic objects.
 - [ ] Generate embeddings for semantic search.
 - [ ] Add fixture-based extraction tests.
 
-## Phase 6: Assistant API
-
-- [ ] Define assistant request/response contract.
-- [ ] Implement planner.
-- [ ] Implement deterministic retrieval tools.
-- [ ] Implement deterministic calculation tools.
-- [ ] Implement timeline tools.
-- [ ] Implement finalizer with provenance.
-- [ ] Add assistant answer tests.
-- [ ] Add refusal/unknown behavior for missing data.
-
-## Phase 7: Voice Pipeline
-
-- [ ] Add audio upload endpoint.
-- [ ] Integrate OpenAI transcription.
-- [ ] Route transcript into assistant API.
-- [ ] Add optional text-to-speech response.
-- [ ] Return transcript, answer, sources, and audio URL/blob.
-- [ ] Add voice latency/error handling.
-- [ ] Add voice demo fixtures where practical.
-
-## Phase 8: Frontend MVP
+## Phase 6: Attention Today And Core UI
 
 - [ ] Build mobile-first app shell.
-- [ ] Build Home dashboard.
-- [ ] Build Tasks screen.
-- [ ] Build Updates screen.
-- [ ] Build Threads screen.
-- [ ] Build Assistant screen.
-- [ ] Build push-to-talk voice UI.
-- [ ] Build Settings with sync status.
-- [ ] Add demo safety indicator.
+- [ ] Build Attention Today dashboard.
+- [ ] Show Needs Action.
+- [ ] Show Important Updates.
+- [ ] Show Financial Watch.
+- [ ] Show Waiting On Me.
+- [ ] Show Quieted Noise.
+- [ ] Show Incomplete / Needs Review.
+- [ ] Build task evidence drilldown.
+- [ ] Build link-limited update drilldown.
+- [ ] Build semantic thread detail view.
+- [ ] Build financial item detail view.
+- [ ] Build source evidence preview.
 - [ ] Add responsive polish.
 
-## Phase 9: Evaluation
+## Phase 7: Search And Assistant
 
-- [ ] Create sanitized fixture library.
+- [ ] Implement semantic object search.
+- [ ] Combine vector search with keyword/exact filters.
+- [ ] Filter by type, date, status, sender, and category.
+- [ ] Define assistant request/response contract.
+- [ ] Implement deterministic retrieval tools.
+- [ ] Implement deterministic timeline tools.
+- [ ] Implement deterministic calculation tools for financial totals.
+- [ ] Implement assistant planner over allowed tools.
+- [ ] Implement finalizer with provenance.
+- [ ] Add refusal/unknown behavior for missing data.
+- [ ] Add assistant answer tests.
+
+## Phase 8: Evaluation
+
+- [ ] Create sanitized fixture library from real-pattern examples.
 - [ ] Add expected outputs for each fixture.
 - [ ] Add classification accuracy checks.
-- [ ] Add extraction precision/recall checks.
+- [ ] Add task extraction checks.
+- [ ] Add update completeness-state checks.
+- [ ] Add semantic thread grouping checks.
+- [ ] Add financial item extraction checks.
 - [ ] Add redaction hard-gate tests.
+- [ ] Add semantic search relevance checks.
 - [ ] Add assistant groundedness tests.
 - [ ] Add deterministic calculation tests.
-- [ ] Add notification tier evaluation fixtures.
 - [ ] Add evaluation report script.
+- [ ] Surface evaluation status in the app.
 
-## Phase 10: Portfolio Demo
+## Phase 9: Portfolio Demo
 
-- [ ] Write demo script.
+- [ ] Finalize five-minute demo script.
+- [ ] Seed curated sanitized snapshot.
+- [ ] Verify live Gmail ingest proof path.
 - [ ] Capture mobile screenshots.
 - [ ] Capture desktop screenshots.
-- [ ] Capture assistant/voice GIF.
+- [ ] Capture assistant interaction media.
 - [ ] Create architecture diagram.
 - [ ] Create product case study.
-- [ ] Create short product deck.
-- [ ] Publish GitHub repo.
 - [ ] Add README walkthrough.
+- [ ] Publish hosted demo.
 
-## Phase 2+ Future Features
+## Future Features
 
+- [ ] Full voice assistant.
+- [ ] Full digest reader.
+- [ ] Opportunities page.
 - [ ] Production Gmail Pub/Sub.
 - [ ] Web push notifications.
 - [ ] Notification preference center.
