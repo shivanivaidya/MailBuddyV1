@@ -110,6 +110,13 @@ Required behavior:
 - runs the same normalization, redaction, extraction, and evaluation checks as snapshot mode
 - can be disabled for public demos
 
+Security constraints:
+
+- OAuth credentials and refresh tokens must never be committed.
+- Development tokens should live under ignored private paths or a local secret store.
+- Hosted tokens, if used, must be encrypted at rest by the deployment provider or application-level encryption.
+- Live Gmail mode must be off by default in public demos unless explicitly enabled.
+
 ## 6. Database Model
 
 ### `source_emails`
@@ -205,6 +212,28 @@ Core fields:
 - `created_at`
 
 Assistant audit records should never include raw private email bodies.
+
+### `security_audit_events`
+
+Stores security-relevant local audit events without raw private content.
+
+Core fields:
+
+- `id`
+- `event_type`
+- `severity`
+- `metadata`
+- `created_at`
+
+Allowed event examples:
+
+- redaction gate failed
+- raw export path created
+- Gmail OAuth connected
+- live ingest disabled for public demo
+- assistant refused unsafe action
+
+Do not store raw email bodies, OAuth tokens, full email addresses, or sensitive entity values in audit metadata.
 
 ### `evaluation_runs`
 
@@ -325,6 +354,14 @@ Assistant rules:
 - Do not expose unsanitized private data.
 - Do not perform risky actions.
 
+LLM trust boundary:
+
+- Planner/finalizer prompts should receive sanitized semantic objects and source snippets only.
+- Raw Gmail body text should not be sent to LLM calls after the redaction boundary.
+- Source snippets sent to LLMs must come from sanitized fields.
+- Prompt-injection text inside emails must be treated as untrusted data, never as system or developer instructions.
+- Assistant tools must use allowlisted operations only.
+
 ## 13. Evaluation Hooks
 
 Evaluation should run against the same pipeline as product data.
@@ -358,6 +395,36 @@ Principles:
 - Require explicit approval for any future risky action.
 
 Security review should run before implementation touches live Gmail data.
+
+Required repository protections:
+
+- `.env`, OAuth client secrets, OAuth tokens, raw Gmail exports, local databases, and private snapshots must be ignored.
+- CI should run secret scanning or a grep-based minimum check before merge.
+- CI should run redaction tests before demo snapshot publication.
+- Public fixtures must be sanitized and should not be generated directly from raw Gmail exports without a redaction step.
+
+Private paths:
+
+```txt
+data/private/
+data/raw/
+data/local/
+.env
+.env.*
+credentials.json
+token.json
+*.sqlite
+*.db
+```
+
+Threat model summary:
+
+- Spoofing: OAuth state and redirect validation are required for hosted OAuth.
+- Tampering: snapshot imports should be schema-validated before storage.
+- Repudiation: security audit events should record high-level actions without raw data.
+- Information disclosure: raw Gmail bodies, tokens, and sensitive entities must stay out of durable demo storage, logs, fixtures, LLM payloads, and screenshots.
+- Denial of service: Gmail ingest should have limits on message count, body size, attachment metadata, and processing concurrency.
+- Elevation of privilege: V1 is readonly and must not include send/delete/unsubscribe scopes.
 
 ## 15. Implementation Slices
 

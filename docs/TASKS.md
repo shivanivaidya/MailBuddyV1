@@ -23,6 +23,7 @@
 - [ ] Add initial CI.
 - [ ] Add local development setup instructions.
 - [ ] Add private-data directory conventions and `.gitignore` coverage.
+- [ ] Add CI secret/private-path checks.
 
 ## Phase 2: Data Model And Storage
 
@@ -49,6 +50,7 @@
 - [ ] Configure Gmail OAuth readonly app.
 - [ ] Implement local/dev Gmail OAuth flow.
 - [ ] Store OAuth tokens securely outside committed files.
+- [ ] Validate OAuth state/redirect handling before hosted OAuth.
 - [ ] Fetch message metadata.
 - [ ] Fetch recent message bodies where available.
 - [ ] Capture detected links and attachment filenames.
@@ -69,6 +71,8 @@
 - [ ] Preserve semantic meaning while altering private details.
 - [ ] Prevent durable raw body storage in demo mode.
 - [ ] Add redaction tests as hard gates.
+- [ ] Add LLM payload safety tests for sanitized-only context.
+- [ ] Add prompt-injection fixture for hostile email-body instructions.
 - [ ] Add Data Safety report endpoint.
 - [ ] Add Data Safety / Evaluation UI surface.
 

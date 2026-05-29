@@ -183,3 +183,27 @@ Decision: Semantic search will use hybrid retrieval: vector similarity plus keyw
 Reason: Email search needs both meaning and exactness. Embeddings help with concepts like "dental receipt," while keyword and structured filters are necessary for senders, dates, subjects, merchants, IDs, and categories.
 
 Implication: Search should return semantic objects with source refs. Stateful operational questions should go through assistant tools rather than plain search.
+
+## Decision 024: Enforce Readonly Gmail Scope In V1
+
+Decision: V1 will use Gmail readonly access only.
+
+Reason: The product does not need send, delete, archive, or unsubscribe capabilities to prove the semantic intelligence layer. Wider scopes increase user risk and security review burden.
+
+Implication: Any future action-taking feature requires a separate approval flow, audit logging, and security review before scope expansion.
+
+## Decision 025: Treat Email Content As Untrusted Input
+
+Decision: All email body text, subjects, snippets, links, and attachments are untrusted input.
+
+Reason: Emails can contain malicious prompt-injection text, misleading links, tracking content, or malformed data. The assistant must never treat email content as instructions.
+
+Implication: Raw email content must pass through sanitization and extraction before LLM planner/finalizer calls. LLM prompts should use sanitized semantic objects, source refs, and deterministic tool results only.
+
+## Decision 026: Add Secret And Private-Data Gates To CI
+
+Decision: CI should include checks for committed secrets, OAuth token files, raw Gmail exports, local databases, and private snapshots once implementation begins.
+
+Reason: The project intentionally touches private Gmail data, OAuth credentials, and AI APIs. Accidental commits are the highest-probability security failure.
+
+Implication: `.gitignore`, private-data conventions, and CI checks are part of Phase 1 scaffolding, not polish.

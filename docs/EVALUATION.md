@@ -10,6 +10,7 @@ Evaluation is a V1 product requirement. It is part of the portfolio story and a 
 
 Evaluate:
 
+- secrets and private-path safety
 - redaction and demo safety
 - semantic classification
 - task extraction
@@ -85,7 +86,36 @@ Failing redaction blocks:
 - curated demo snapshot publication
 - hosted demo refresh
 
-## 5. Classification Quality
+## 5. Secrets And Private-Path Safety
+
+Secrets checks are hard gates before pushing implementation changes.
+
+Verify:
+
+- no `.env` files are committed
+- no OAuth `credentials.json` is committed
+- no OAuth `token.json` is committed
+- no raw Gmail export is committed
+- no local database file is committed
+- no private snapshot is committed before redaction
+- no OpenAI API key pattern appears in tracked files
+- no Google OAuth client secret pattern appears in tracked files
+
+Minimum ignored private paths:
+
+- `data/private/`
+- `data/raw/`
+- `data/local/`
+- `.env`
+- `.env.*`
+- `credentials.json`
+- `token.json`
+- `*.sqlite`
+- `*.db`
+
+These checks should run in CI once implementation starts.
+
+## 6. Classification Quality
 
 Track classification accuracy across:
 
@@ -115,7 +145,7 @@ Metrics:
 - false positive rate for Attention Today candidates
 - false negative rate for high-priority objects
 
-## 6. Task Extraction Quality
+## 7. Task Extraction Quality
 
 Measure whether MailBuddy correctly extracts:
 
@@ -135,7 +165,7 @@ Metrics:
 - field accuracy: due date, urgency, and source
 - confidence calibration: low confidence when evidence is weak
 
-## 7. Update Quality
+## 8. Update Quality
 
 Measure whether MailBuddy correctly extracts operational updates.
 
@@ -169,7 +199,7 @@ Hard rule:
 
 If an email only links to a merchant or institutional portal for details, the system must not fabricate hidden details.
 
-## 8. Financial Item Quality
+## 9. Financial Item Quality
 
 Evaluate:
 
@@ -193,7 +223,7 @@ Metrics:
 
 Financial totals must be tested through deterministic tools, not LLM output.
 
-## 9. Semantic Thread Quality
+## 10. Semantic Thread Quality
 
 Evaluate semantic thread grouping separately from Gmail thread IDs.
 
@@ -217,7 +247,7 @@ Metrics:
 
 False merges are higher risk than missed merges in V1. Prefer conservative grouping.
 
-## 10. Semantic Search Relevance
+## 11. Semantic Search Relevance
 
 Evaluate search over semantic objects.
 
@@ -240,7 +270,7 @@ Criteria:
 
 Search should use hybrid retrieval: vector similarity plus keyword/exact filters.
 
-## 11. Assistant Groundedness
+## 12. Assistant Groundedness
 
 The assistant should answer from semantic objects and deterministic tools.
 
@@ -264,8 +294,23 @@ Evaluation criteria:
 - answer identifies link-limited evidence
 - calculations come from deterministic tools
 - filters and timelines match stored data
+- prompt-injection text inside emails is ignored as untrusted content
+- assistant never follows email-body instructions that conflict with system or developer instructions
 
-## 12. Deterministic Tool Tests
+## 13. LLM Payload Safety
+
+Evaluate what is sent to LLM APIs.
+
+Verify:
+
+- planner receives sanitized context only
+- finalizer receives sanitized tool results only
+- raw Gmail body text is not sent after the redaction boundary
+- source snippets in LLM payloads are sanitized
+- assistant audit records do not contain raw private email bodies
+- tool schemas are allowlisted
+
+## 14. Deterministic Tool Tests
 
 Test deterministic tools independently:
 
@@ -282,11 +327,12 @@ Test deterministic tools independently:
 
 LLM tests should not verify deterministic logic.
 
-## 13. Evaluation Report
+## 15. Evaluation Report
 
 Create an evaluation report command that outputs:
 
 - fixture count
+- secrets/private-path pass/fail
 - semantic object count
 - classification accuracy
 - task extraction precision/recall
@@ -302,7 +348,7 @@ Create an evaluation report command that outputs:
 
 The app should also surface evaluation status in the Data Safety / Evaluation screen.
 
-## 14. Known Failure Case Registry
+## 16. Known Failure Case Registry
 
 Track failure cases explicitly.
 
