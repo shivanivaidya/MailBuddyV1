@@ -207,3 +207,27 @@ Decision: CI should include checks for committed secrets, OAuth token files, raw
 Reason: The project intentionally touches private Gmail data, OAuth credentials, and AI APIs. Accidental commits are the highest-probability security failure.
 
 Implication: `.gitignore`, private-data conventions, and CI checks are part of Phase 1 scaffolding, not polish.
+
+## Decision 027: Design Attention Today As The Primary Workspace
+
+Decision: The V1 UI will make Attention Today the primary workspace, with a capped first viewport showing the attention count, top three source-backed decisions, and Needs Review items.
+
+Reason: The core product promise is to reduce Gmail overwhelm within seconds. A broad dashboard mosaic would dilute that promise and make the app feel like a generic AI productivity UI.
+
+Implication: Secondary surfaces such as Tasks, Updates, Threads, Financial, Search, Assistant, and Safety support the Attention Today story instead of competing with it.
+
+## Decision 028: Use A Shared Source Evidence Drawer
+
+Decision: Every user-facing semantic object must expose source evidence through a shared drawer on desktop and a full-screen sheet on mobile.
+
+Reason: Trust depends on seeing why MailBuddy made a claim without forcing the user back into raw Gmail or exposing private raw email bodies in demo mode.
+
+Implication: Tasks, updates, semantic threads, financial items, search results, and assistant answers should share one evidence interaction pattern.
+
+## Decision 029: Treat Incomplete Data As A First-Class UI State
+
+Decision: The UI will show missing, partial, link-limited, and low-confidence states explicitly instead of hiding them behind generic summaries.
+
+Reason: Real Gmail often omits important details or points to external links. Overclaiming would make the app feel fake and reduce trust.
+
+Implication: Update detail views, assistant answers, and Attention Today items must show completeness and uncertainty labels when evidence is incomplete.

@@ -8,8 +8,8 @@
 - [x] Record dual-mode, Attention Today, and scope decisions.
 - [x] Run engineering review on architecture, data flow, schema, edge cases, and tests.
 - [ ] Write exact five-minute demo script.
-- [ ] Run security review before touching real Gmail data.
-- [ ] Run design review for Attention Today, semantic threads, assistant, and Data Safety.
+- [x] Run security review before touching real Gmail data.
+- [x] Run design review for Attention Today, semantic threads, assistant, and Data Safety.
 - [ ] Split implementation into executable specs.
 
 ## Phase 1: Project Scaffolding
@@ -96,17 +96,23 @@
 
 - [ ] Build mobile-first app shell.
 - [ ] Build Attention Today dashboard.
+- [ ] Implement first-viewport Attention hierarchy with attention count, top three decisions, and Needs Review.
 - [ ] Show Needs Action.
 - [ ] Show Important Updates.
 - [ ] Show Financial Watch.
 - [ ] Show Waiting On Me.
 - [ ] Show Quieted Noise.
 - [ ] Show Incomplete / Needs Review.
+- [ ] Build shared source evidence drawer on desktop and full-screen sheet on mobile.
 - [ ] Build task evidence drilldown.
 - [ ] Build link-limited update drilldown.
+- [ ] Show update completeness states in update detail views.
 - [ ] Build semantic thread detail view.
+- [ ] Show possible related messages separately from confirmed semantic thread members.
 - [ ] Build financial item detail view.
 - [ ] Build source evidence preview.
+- [ ] Build Data Safety / Evaluation status screen.
+- [ ] Add keyboard, focus, contrast, and 44px touch target checks for core demo flow.
 - [ ] Add responsive polish.
 
 ## Phase 7: Search And Assistant
