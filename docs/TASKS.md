@@ -7,7 +7,7 @@
 - [x] Run office-hours review and choose dual-mode semantic system.
 - [x] Record dual-mode, Attention Today, and scope decisions.
 - [x] Run engineering review on architecture, data flow, schema, edge cases, and tests.
-- [ ] Write exact five-minute demo script.
+- [x] Write exact five-minute demo script.
 - [x] Run security review before touching real Gmail data.
 - [x] Run design review for Attention Today, semantic threads, assistant, and Data Safety.
 - [x] Run developer experience review for repo onboarding and agent workflow.
@@ -51,6 +51,7 @@
 
 - [ ] Implement sanitized snapshot import first.
 - [ ] Add seed/reset command for curated demo snapshot.
+- [ ] Seed the required objects from `DEMO_SCRIPT.md`.
 - [ ] Configure Gmail OAuth readonly app.
 - [ ] Implement local/dev Gmail OAuth flow.
 - [ ] Store OAuth tokens securely outside committed files.
@@ -154,6 +155,7 @@
 
 - [ ] Finalize five-minute demo script.
 - [ ] Seed curated sanitized snapshot.
+- [ ] Verify every `DEMO_SCRIPT.md` acceptance check.
 - [ ] Verify live Gmail ingest proof path.
 - [ ] Capture mobile screenshots.
 - [ ] Capture desktop screenshots.

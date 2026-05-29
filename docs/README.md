@@ -88,6 +88,7 @@ Deferred:
 - [PRD.md](./PRD.md): product requirements and V1 scope.
 - [ARCHITECTURE.md](./ARCHITECTURE.md): system design, ingestion, semantic object layer, assistant, privacy, and evaluation.
 - [UI_UX.md](./UI_UX.md): product surfaces and interaction behavior.
+- [DEMO_SCRIPT.md](./DEMO_SCRIPT.md): five-minute demo script, required seeded objects, and acceptance checks.
 - [AGENTS.md](./AGENTS.md): instructions for coding agents working on this project.
 - [TASKS.md](./TASKS.md): implementation roadmap.
 - [DECISIONS.md](./DECISIONS.md): product and architecture decision log.
@@ -96,7 +97,7 @@ Deferred:
 
 ## Current Status
 
-Foundation docs are being updated through gstack review skills before implementation starts.
+Foundation docs are being updated through gstack review skills before implementation starts. The five-minute demo script is now the acceptance test for the first implementation specs.
 
 ## Agent Quick Start
 

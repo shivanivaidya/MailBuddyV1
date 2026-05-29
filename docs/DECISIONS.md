@@ -247,3 +247,11 @@ Decision: V1 repo onboarding will optimize for an agent or contributor understan
 Reason: The project is intentionally spec-driven and agent-assisted. The most important developer experience is not package installation yet; it is quickly entering the correct product and privacy context.
 
 Implication: Until scaffolding exists, docs must clearly say that no dev/test commands exist and must provide a concrete reading order and verification path.
+
+## Decision 032: Use The Five-Minute Demo Script As The V1 Acceptance Test
+
+Decision: `docs/DEMO_SCRIPT.md` is the acceptance test for the first implementation specs.
+
+Reason: The build should optimize for a concrete, source-backed walkthrough rather than drifting into broad infrastructure or feature coverage.
+
+Implication: The first spec should build the smallest vertical slice that satisfies the script with sanitized snapshot data before expanding into live Gmail ingest and richer extraction.

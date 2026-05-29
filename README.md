@@ -10,6 +10,7 @@ Start here:
 - [docs/PRD.md](docs/PRD.md): product requirements and V1 scope.
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md): system architecture and data flow.
 - [docs/UI_UX.md](docs/UI_UX.md): app screens and interaction design.
+- [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md): five-minute demo script and acceptance checks.
 - [docs/AGENTS.md](docs/AGENTS.md): operating manual for coding agents.
 - [docs/TASKS.md](docs/TASKS.md): implementation roadmap.
 - [docs/DECISIONS.md](docs/DECISIONS.md): decision log.
