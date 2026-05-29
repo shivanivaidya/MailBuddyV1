@@ -1,319 +1,379 @@
-# MailBuddy Architecture
+# MailBuddyV1 Architecture
 
 ## 1. Architecture Summary
 
-MailBuddy is a Gmail-only, AI-native inbox operating system. The MVP is a single-account portfolio/demo app that stores sanitized semantic objects derived from Gmail, not raw private mailbox data.
+MailBuddyV1 is a Gmail-only semantic intelligence layer. V1 uses a dual-mode architecture:
 
-Recommended MVP stack:
+- **Sanitized snapshot mode:** the default polished demo path.
+- **Live Gmail readonly mode:** a technical proof path that ingests the creator's Gmail.
+
+Both modes feed the same semantic object store. The UI, search, assistant, and evaluation layers must not know whether an object came from a curated snapshot or live Gmail ingest.
+
+V1 is single-user and demo-safe. It stores sanitized semantic objects, source references, and embeddings. It does not store raw private mailbox bodies long-term.
+
+## 2. Recommended V1 Stack
 
 - Frontend: Next.js mobile-first web app.
 - Backend: Python FastAPI.
 - Database: Postgres with pgvector.
-- Email: Gmail API OAuth.
-- AI: OpenAI text, embeddings, and voice APIs.
-- Jobs: FastAPI background tasks or a simple Python worker for MVP.
-- Deployment target: Vercel frontend, Render/Fly/Railway backend, Supabase/Neon Postgres.
+- First database target: local Postgres for development, with Supabase or Neon as the hosted deployment target.
+- Email: Gmail API OAuth readonly.
+- AI: OpenAI text, embeddings, and optional later voice APIs.
+- Jobs: simple Python worker or FastAPI background tasks for V1.
+- Deployment target: Vercel frontend plus hosted FastAPI/Postgres, or a single full-stack host if engineering review later chooses one.
 
-## 2. System Layers
+Voice is not a V1 architecture dependency. The architecture should not block future voice, but V1 should prove semantic objects, Attention Today, search, assistant, redaction, and evaluation first.
+
+## 3. System Layers
 
 ```txt
-Next.js web/mobile UI
-  -> FastAPI backend
-    -> Gmail ingestion
-    -> normalization pipeline
-    -> demo sanitization pipeline
-    -> semantic classification/extraction
+Next.js UI
+  -> FastAPI API
+    -> snapshot import
+    -> Gmail readonly ingest
+    -> normalization
+    -> raw transient processing boundary
+    -> sanitization/redaction
+    -> semantic extraction
     -> semantic object store
-    -> deterministic tools
-    -> assistant planner/executor/finalizer
-    -> voice pipeline
-    -> evaluation hooks
+    -> deterministic tool layer
+    -> assistant planner/finalizer
+    -> evaluation runner
 Postgres + pgvector
 ```
 
-## 3. Gmail Ingestion
+## 4. Core Data Flow
 
-The Gmail ingestion layer connects to one Gmail account through OAuth and fetches recent messages.
+```txt
+Snapshot JSON or Gmail API message
+  -> source normalization
+  -> transient raw content
+  -> redaction + replacement maps
+  -> sanitized source_email
+  -> classification
+  -> typed semantic objects
+  -> source_refs
+  -> embedding text
+  -> embeddings
+  -> Attention Today / Search / Assistant / Evaluation
+```
 
-MVP behavior:
+Important boundary:
 
-- Initial sync fetches the last 90 days or last 1,000 messages.
-- Manual `Sync now` endpoint starts an incremental sync.
-- Background sync runs every 30 minutes while the backend is active.
-- Gmail message IDs, thread IDs, timestamps, labels, and `historyId` are tracked to prevent duplicate processing.
-- Raw bodies are processed transiently and should not be retained after sanitized semantic objects are created.
+- Raw Gmail content may exist only in the ingestion process, local raw export files, or explicitly private development storage.
+- Durable application storage should contain sanitized `source_email` records, semantic objects, source refs, redaction maps, eval records, and audit metadata.
 
-Production behavior:
+## 5. Modes
 
-- Gmail Pub/Sub notifies the backend of mailbox changes.
-- Backend fetches changed messages using Gmail history API.
-- Priority queue processes high-stakes messages before digests/noise.
+### Snapshot Mode
 
-## 4. Normalization Pipeline
+Snapshot mode is the default demo mode.
 
-Normalization converts Gmail API responses into a consistent internal format.
+Purpose:
 
-Normalized fields:
+- reliable walkthrough
+- controlled redaction
+- repeatable evaluation
+- portfolio screenshots and recordings
 
-- Gmail message ID
-- Gmail thread ID
-- source URL
-- sender display name
-- sender email domain
-- recipient metadata
-- subject
-- received timestamp
-- labels
-- snippet
-- parsed plain text
-- attachment metadata
-- detected links
+Input:
 
-The normalized raw representation should be temporary for the MVP. It exists to support classification, extraction, and sanitization, then is discarded or minimized.
+- curated sanitized snapshot JSON generated from real-pattern examples
 
-## 5. Demo Sanitization Pipeline
+Required behavior:
 
-The MVP stores demo-safe data only.
+- imports into the same tables as live Gmail objects
+- preserves synthetic source IDs and source refs
+- marks objects with `ingest_mode = snapshot`
+- supports reset/reseed
 
-Sanitization runs before durable storage of semantic objects.
+### Live Gmail Readonly Mode
+
+Live Gmail mode proves the pipeline works on real Gmail data.
+
+Purpose:
+
+- technical credibility
+- local/dev validation
+- future production path
+
+Input:
+
+- Gmail API readonly messages
+
+Required behavior:
+
+- uses readonly OAuth scope
+- stores tokens outside committed files
+- tracks Gmail message ID and thread ID
+- marks objects with `ingest_mode = gmail_live`
+- runs the same normalization, redaction, extraction, and evaluation checks as snapshot mode
+- can be disabled for public demos
+
+## 6. Database Model
+
+### `source_emails`
+
+Stores minimized, sanitized source-message records.
+
+Core fields:
+
+- `id`
+- `ingest_mode`: `snapshot` or `gmail_live`
+- `gmail_message_id`
+- `gmail_thread_id`
+- `sender_display`
+- `sender_domain`
+- `subject`
+- `received_at`
+- `labels`
+- `snippet`
+- `sanitized_excerpt`
+- `detected_links`
+- `attachment_filenames`
+- `raw_retention_status`
+- `created_at`
+
+Do not store full raw body in this table.
+
+### `semantic_objects`
+
+Base table for extracted meaning.
+
+Core fields:
+
+- `id`
+- `type`: `task`, `update`, `semantic_thread`, `financial_item`, `institutional_item`, `digest_item`, `noise_item`, `reference_item`
+- `title`
+- `summary`
+- `status`
+- `priority`
+- `confidence`
+- `object_date`
+- `extracted_entities`
+- `uncertainty_flags`
+- `embedding_text`
+- `embedding`
+- `created_at`
+- `updated_at`
+
+Typed details can live in `details` JSONB for V1, with table extraction later if needed. This keeps the first implementation fast while preserving a clean base object model.
+
+### `source_refs`
+
+Links semantic objects to evidence.
+
+Core fields:
+
+- `id`
+- `semantic_object_id`
+- `source_email_id`
+- `evidence_snippet`
+- `support_reason`
+- `confidence`
+- `created_at`
+
+Every semantic object shown in the UI or assistant must have at least one source ref unless it is an aggregate object whose source refs are inherited from children.
+
+### `redaction_maps`
+
+Stores deterministic replacement mappings.
+
+Core fields:
+
+- `id`
+- `entity_type`
+- `raw_hash`
+- `replacement_value`
+- `sensitivity_level`
+- `created_at`
+
+The raw value itself should not be stored. Use a stable hash for repeatability.
+
+### `assistant_queries`
+
+Stores assistant audit records.
+
+Core fields:
+
+- `id`
+- `query`
+- `tool_calls`
+- `source_object_ids`
+- `answer`
+- `answer_type`
+- `created_at`
+
+Assistant audit records should never include raw private email bodies.
+
+### `evaluation_runs`
+
+Stores evaluation reports.
+
+Core fields:
+
+- `id`
+- `run_type`
+- `fixture_count`
+- `passed`
+- `failed`
+- `metrics`
+- `created_at`
+
+## 7. Semantic Object Details
+
+V1 can use a `details` JSONB field on `semantic_objects` for typed fields.
+
+Required detail shapes:
+
+- `task`: due date, urgency, action status, reason, uncertainty flags.
+- `update`: current state, latest change, timeline, action needed, completeness state.
+- `financial_item`: institution/merchant, amount, due date, category, calculation eligibility.
+- `institutional_item`: institution type, sensitivity level, action required.
+- `semantic_thread`: participant entities, Gmail thread IDs, unresolved questions, waiting-on state, suggested next action, merge reasons.
+- `noise_item`: sender/domain, reason quieted, suppression confidence.
+- `digest_item`: topic, summary, saved-reading candidate.
+- `reference_item`: topic, long-term retrieval tags.
+
+## 8. Link-Limited Updates
+
+Update extraction must classify evidence completeness.
+
+Allowed completeness states:
+
+- `complete_from_email`
+- `partial_from_email`
+- `details_behind_link`
+- `requires_user_review`
+- `unsupported_without_external_fetch`
 
 Rules:
 
-- Keep ordinary merchant names unless the merchant implies sensitive financial/health/legal/government context.
-- Replace financial institutions with fabricated realistic names.
-- Replace health providers with fabricated realistic names.
-- Replace government/legal/immigration institutions with generalized or fabricated names.
-- Replace people names, emails, phone numbers, addresses, account numbers, order IDs, and confirmation numbers.
-- Preserve category, lifecycle state, relative dates, and product meaning.
+- Do not infer refund, replacement, delivery, or payment details when the email only contains a portal link.
+- Store the fact that an update exists separately from the unverified details.
+- Surface link-limited state in Attention Today, update detail views, and assistant answers.
 
-Example transformations:
+## 9. Semantic Threads
 
-- `Chase` -> `Northstar Bank`
-- `Kaiser Permanente` -> `Willow Health`
-- `Dr. Jane Smith Dental` -> `Brightline Dental`
-- `john.smith@gmail.com` -> `person_12@example.com`
-- `Order #123-4567890` -> `Order #A-20491`
+Semantic threads should be built conservatively.
 
-Sanitization should be deterministic enough that repeated references to the same entity remain consistent within a demo snapshot.
+V1 algorithm:
 
-## 6. Semantic Classification
+1. Group by Gmail thread ID.
+2. Normalize subject lines.
+3. Extract participants and key entities.
+4. Compare candidate groups by entity overlap, participant overlap, date proximity, shared identifiers, and embedding similarity.
+5. Auto-merge only high-confidence matches.
+6. Flag ambiguous matches as possible related messages.
 
-Classification routes each normalized email into one or more semantic categories:
+The UI must explain auto-merges.
 
-- task
-- update
-- semantic thread
-- financial vigilance
-- opportunity
-- digest
-- noise
-- institutional
-- reference
-
-Use prompt chaining for fixed pipelines:
+Example:
 
 ```txt
-normalize -> classify -> extract fields -> validate -> sanitize -> store
+Grouped because both messages mention the same insurance claim,
+share two participants, and occurred within 4 days.
 ```
 
-Use routing for specialized extraction:
+## 10. Search Architecture
 
-- task extraction workflow
-- update tracking workflow
-- financial vigilance workflow
-- digest workflow
-- noise/unsubscribe workflow
-- institutional item workflow
+Search should be hybrid.
 
-## 7. Semantic Object Layer
+Use:
 
-The semantic object layer is the core of MailBuddy.
+- vector similarity over `embedding_text`
+- keyword/full-text matching for exact names, subjects, IDs, and terms
+- structured filters for object type, date, status, sender/domain, category, and priority
 
-Core entities:
+Search returns semantic objects, not raw emails. Each result must include source refs.
 
-- `semantic_objects`
-- `tasks`
-- `updates`
-- `semantic_threads`
-- `financial_items`
-- `opportunities`
-- `digest_items`
-- `noise_items`
-- `institutional_items`
-- `reference_items`
-- `source_refs`
-- `redaction_rules`
-- `assistant_queries`
-- `evaluation_runs`
+Stateful questions such as "Did I get reimbursed?" should go through assistant tools, not plain search.
 
-Every object should include:
-
-- stable ID
-- type
-- title
-- summary
-- status
-- priority/urgency
-- confidence
-- source reference
-- extracted fields
-- timestamps
-- sanitized display fields
-- embedding where useful
-
-## 8. Deterministic Tool Layer
+## 11. Deterministic Tool Layer
 
 Assistant tools should be constrained and deterministic.
 
-Tools should handle:
+Required V1 tools:
 
-- retrieving semantic objects
-- filtering by date/category/status
-- calculating totals
-- building timelines
-- checking task due dates
-- finding unresolved threads
-- ranking items by urgency
-- applying state transitions
-- enforcing notification policy
+- list Attention Today items
+- search semantic objects
+- get object details
+- get source refs
+- filter objects by type/date/status/category
+- build update timelines
+- identify unresolved semantic threads
+- calculate financial totals only for eligible financial items
 
 LLMs should not directly compute totals, mutate state without tool calls, or claim facts that tools did not retrieve.
 
-## 9. Assistant Planner / Executor / Finalizer
-
-The assistant should use a structured flow:
-
-1. Planner interprets the user request and chooses tools.
-2. Executor runs deterministic tools against Postgres.
-3. Finalizer explains results in natural language with citations/provenance.
-
-The assistant should say when it does not have enough data. It should not infer refunds, payments, deadlines, or replies unless supported by semantic objects or source evidence.
-
-## 10. Voice Pipeline
-
-Voice is implemented through the Python backend and OpenAI voice APIs.
-
-Flow:
+## 12. Assistant Flow
 
 ```txt
-User taps mic
--> browser records audio
--> Next.js uploads audio to FastAPI
--> FastAPI transcribes with OpenAI
--> assistant planner handles transcript
--> deterministic tools query Postgres
--> finalizer writes response
--> optional text-to-speech creates audio
--> frontend displays text and plays audio
+User question
+  -> planner selects deterministic tools
+  -> tools query semantic objects and source refs
+  -> finalizer writes concise answer
+  -> answer cites source objects
+  -> audit record stored
 ```
 
-The voice assistant should support:
+Assistant rules:
 
-- daily briefing
-- task review
-- update review
-- "what needs attention"
-- "did I get refunded"
-- "which conversations need replies"
+- Say when evidence is incomplete.
+- Say when details are behind links.
+- Do not invent refunds, payments, due dates, or reply state.
+- Do not expose unsanitized private data.
+- Do not perform risky actions.
 
-## 11. Notification Architecture
+## 13. Evaluation Hooks
 
-Notification decisions happen after semantic processing, not directly after Gmail arrival.
+Evaluation should run against the same pipeline as product data.
 
-Production flow:
+Required gates:
 
-```txt
-Gmail push
--> fetch changed messages
--> normalize
--> classify/extract
--> score importance
--> choose notification tier
-```
+- redaction hard gate
+- semantic classification checks
+- task extraction checks
+- update completeness-state checks
+- semantic thread grouping checks
+- financial extraction checks
+- semantic search relevance checks
+- assistant groundedness checks
+- deterministic calculation checks
 
-Tiers:
-
-- `critical`: immediate notification
-- `timely`: next allowed notification window
-- `digest`: daily/weekly summary
-- `silent`: no interruption
-
-MVP does not need production push notifications. It should include an in-app notification center and simulated notification examples.
-
-## 12. Agentic Workflow Layer
-
-Specialized conceptual agents may enrich semantic objects but should not take risky actions.
-
-Potential modules:
-
-- Email Triage Agent
-- Task Extraction Agent
-- Update Tracking Agent
-- Thread Understanding Agent
-- Financial Vigilance Agent
-- Opportunity Agent
-- Noise / Unsubscribe Agent
-- Memory / Preference Agent
-- Assistant Orchestrator Agent
-- Evaluator / Guardrail Agent
-
-Allowed:
-
-- suggest unsubscribe
-- draft reply
-- flag urgency
-- summarize thread
-- create or enrich structured objects
-
-Not allowed without explicit approval:
-
-- send reply
-- delete email
-- unsubscribe
-- log into external accounts
-- make payments or purchases
-
-## 13. Evaluation Layer
-
-Evaluation should be a first-class backend capability.
-
-Evaluate:
-
-- extraction precision/recall
-- classification accuracy
-- redaction safety
-- assistant groundedness
-- deterministic tool correctness
-- notification tier accuracy
-- voice transcription and assistant response quality
-
-Use sanitized fixtures with expected semantic outputs. Redaction tests should be hard gates before screenshots or portfolio demos.
+Portfolio screenshots and public demo snapshots should require redaction passing.
 
 ## 14. Security And Privacy
 
 Principles:
 
 - Gmail OAuth only; never store Gmail passwords.
-- Request the narrowest feasible Gmail scopes.
-- Store tokens securely.
-- Store sanitized semantic objects, not raw private mailbox content.
-- Avoid long-term raw body storage.
+- Request readonly Gmail scope for V1.
+- Store OAuth tokens outside the repo.
+- Keep raw exports under ignored private paths.
+- Avoid durable raw body storage.
+- Store sanitized semantic objects and source refs.
 - Log minimally.
-- Do not expose raw emails in screenshots, assistant responses, or demo fixtures.
-- Require explicit approval for risky actions.
+- Never expose raw emails in screenshots, assistant responses, or fixtures.
+- Require explicit approval for any future risky action.
 
-## 15. Parallel Development Boundaries
+Security review should run before implementation touches live Gmail data.
 
-Suggested parallel workstreams:
+## 15. Implementation Slices
 
-- backend Gmail ingestion
-- backend semantic pipeline
-- backend assistant API
-- backend voice pipeline
-- frontend dashboard
-- frontend assistant/voice UI
-- demo sanitization
-- evaluation/tests
-- docs
+Recommended vertical slices:
 
-Each coding agent should own explicit files/modules and avoid modifying unrelated work.
+1. Scaffold app, backend, database, CI, private-data conventions.
+2. Define schema and migrations.
+3. Implement snapshot import and seed demo data.
+4. Implement redaction and source refs.
+5. Implement semantic extraction for tasks, updates, financial items, institutional items, noise, and reference items.
+6. Implement semantic threads lite.
+7. Implement Attention Today.
+8. Implement semantic search.
+9. Implement assistant deterministic tools and finalizer.
+10. Implement evaluation report.
+11. Add live Gmail readonly proof mode.
+12. Polish portfolio demo and README walkthrough.
+
+Snapshot import should land before live Gmail ingest so UI and evals can develop without private-data risk.

@@ -159,3 +159,27 @@ Decision: Before implementation, write the exact five-minute demo script.
 Reason: If the product story is not compelling on paper, adding features will not fix it. The script forces the team to identify the five Attention Today decisions, one task evidence drilldown, one link-limited update, one semantic thread, one search query, one assistant query, and one safety/eval proof point.
 
 Implication: `TASKS.md` should treat the demo script as a pre-implementation gate.
+
+## Decision 021: Build Snapshot Import Before Live Gmail Ingest
+
+Decision: Implement sanitized snapshot import before live Gmail ingest.
+
+Reason: Snapshot import lets UI, semantic objects, assistant tools, and evaluation develop without exposing private data or depending on OAuth readiness. Live Gmail ingest remains important, but it should prove the same pipeline after the safer path exists.
+
+Implication: Engineering work should start with schema, snapshot import, redaction, and seeded semantic objects. Live Gmail readonly ingest should reuse that path rather than creating a separate demo pipeline.
+
+## Decision 022: Use JSONB Typed Details For V1 Semantic Objects
+
+Decision: V1 will use a shared `semantic_objects` table with typed `details` JSONB rather than separate fully normalized tables for every object subtype.
+
+Reason: V1 needs speed and flexibility while object shapes are still being validated against real-pattern fixtures. A stable base object plus typed details keeps the schema coherent without over-normalizing too early.
+
+Implication: Evaluation fixtures must validate each object type's required details. If a type stabilizes or needs heavy querying later, it can move to a dedicated table.
+
+## Decision 023: Use Hybrid Search
+
+Decision: Semantic search will use hybrid retrieval: vector similarity plus keyword/exact filters.
+
+Reason: Email search needs both meaning and exactness. Embeddings help with concepts like "dental receipt," while keyword and structured filters are necessary for senders, dates, subjects, merchants, IDs, and categories.
+
+Implication: Search should return semantic objects with source refs. Stateful operational questions should go through assistant tools rather than plain search.

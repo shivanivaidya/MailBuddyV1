@@ -6,8 +6,8 @@
 - [x] Run CEO review and update PRD around V1 semantic-object scope.
 - [x] Run office-hours review and choose dual-mode semantic system.
 - [x] Record dual-mode, Attention Today, and scope decisions.
+- [x] Run engineering review on architecture, data flow, schema, edge cases, and tests.
 - [ ] Write exact five-minute demo script.
-- [ ] Run engineering review on architecture, data flow, schema, edge cases, and tests.
 - [ ] Run security review before touching real Gmail data.
 - [ ] Run design review for Attention Today, semantic threads, assistant, and Data Safety.
 - [ ] Split implementation into executable specs.
@@ -29,6 +29,7 @@
 - [ ] Choose Supabase, Neon, or local Postgres first path.
 - [ ] Define `source_email` schema.
 - [ ] Define base `semantic_object` schema.
+- [ ] Add typed `details` JSONB validation per object type.
 - [ ] Define `source_ref` schema.
 - [ ] Define task object fields.
 - [ ] Define update object fields, including link-limited states.
@@ -43,6 +44,8 @@
 
 ## Phase 3: Gmail Ingestion And Snapshot Import
 
+- [ ] Implement sanitized snapshot import first.
+- [ ] Add seed/reset command for curated demo snapshot.
 - [ ] Configure Gmail OAuth readonly app.
 - [ ] Implement local/dev Gmail OAuth flow.
 - [ ] Store OAuth tokens securely outside committed files.
@@ -107,6 +110,7 @@
 - [ ] Implement semantic object search.
 - [ ] Combine vector search with keyword/exact filters.
 - [ ] Filter by type, date, status, sender, and category.
+- [ ] Return source refs with every search result.
 - [ ] Define assistant request/response contract.
 - [ ] Implement deterministic retrieval tools.
 - [ ] Implement deterministic timeline tools.
