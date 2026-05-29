@@ -231,3 +231,19 @@ Decision: The UI will show missing, partial, link-limited, and low-confidence st
 Reason: Real Gmail often omits important details or points to external links. Overclaiming would make the app feel fake and reduce trust.
 
 Implication: Update detail views, assistant answers, and Attention Today items must show completeness and uncertainty labels when evidence is incomplete.
+
+## Decision 030: Add A Root Agent Entry Point
+
+Decision: The repository will include a root `AGENTS.md` that points agents to the full operating manual in `docs/AGENTS.md`.
+
+Reason: Coding agents commonly look for `AGENTS.md` from the repository root. Keeping instructions only under `docs/` makes the first step less reliable and increases time to working context.
+
+Implication: Root `AGENTS.md` should stay short and directive. Detailed rules live in `docs/AGENTS.md`.
+
+## Decision 031: Optimize Repo DX For Time To Working Context
+
+Decision: V1 repo onboarding will optimize for an agent or contributor understanding scope, safety rules, and next action in under five minutes.
+
+Reason: The project is intentionally spec-driven and agent-assisted. The most important developer experience is not package installation yet; it is quickly entering the correct product and privacy context.
+
+Implication: Until scaffolding exists, docs must clearly say that no dev/test commands exist and must provide a concrete reading order and verification path.

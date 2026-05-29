@@ -97,3 +97,24 @@ Deferred:
 ## Current Status
 
 Foundation docs are being updated through gstack review skills before implementation starts.
+
+## Agent Quick Start
+
+This repo is currently documentation-only. There is no app scaffold, package manager, test runner, or local dev server yet.
+
+For coding agents and contributors:
+
+```bash
+git status --short
+git log --oneline -10
+rg --files
+```
+
+Then read:
+
+1. [Root AGENTS.md](../AGENTS.md): root agent entry point.
+2. [docs/AGENTS.md](./AGENTS.md): full agent operating manual.
+3. [TASKS.md](./TASKS.md): current roadmap.
+4. The task-relevant specialist docs.
+
+Target time to working context: under 5 minutes.

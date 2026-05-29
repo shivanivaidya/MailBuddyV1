@@ -2,6 +2,8 @@
 
 ## 2026-05-28
 
+- Added root `AGENTS.md` as the agent entry point.
+- Applied `plan-devex-review` to repo onboarding and agent workflow docs.
 - Created foundational MailBuddy documentation set.
 - Defined Gmail-only, single-account portfolio/demo MVP.
 - Chose Next.js frontend and Python FastAPI backend.

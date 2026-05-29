@@ -10,6 +10,7 @@
 - [ ] Write exact five-minute demo script.
 - [x] Run security review before touching real Gmail data.
 - [x] Run design review for Attention Today, semantic threads, assistant, and Data Safety.
+- [x] Run developer experience review for repo onboarding and agent workflow.
 - [ ] Split implementation into executable specs.
 
 ## Phase 1: Project Scaffolding
@@ -24,6 +25,9 @@
 - [ ] Add local development setup instructions.
 - [ ] Add private-data directory conventions and `.gitignore` coverage.
 - [ ] Add CI secret/private-path checks.
+- [ ] Replace documentation-only verification notes with real install/dev/test commands after scaffolding.
+- [ ] Add a seeded "first run" command that proves snapshot import and Attention Today work.
+- [ ] Add developer-facing error message patterns for env, OAuth, redaction, and eval failures.
 
 ## Phase 2: Data Model And Storage
 
@@ -158,6 +162,15 @@
 - [ ] Create product case study.
 - [ ] Add README walkthrough.
 - [ ] Publish hosted demo.
+
+## Phase 10: Developer Experience
+
+- [ ] Keep root `AGENTS.md` aligned with `docs/AGENTS.md`.
+- [ ] Add CONTRIBUTING or equivalent contributor guide after scaffolding.
+- [ ] Add exact setup commands once frontend/backend skeletons exist.
+- [ ] Add sample `.env.example` with safe placeholder values.
+- [ ] Add troubleshooting docs for OAuth, local Postgres, redaction gates, and eval failures.
+- [ ] Run `/devex-review` after scaffolding to measure actual time to working context.
 
 ## Future Features
 
